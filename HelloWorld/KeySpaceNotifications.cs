@@ -17,6 +17,13 @@ namespace HelloWorld
         {
             IDatabase cache = Helper.Connection.GetDatabase();
             ISubscriber subscriber = Helper.Connection.GetSubscriber();
+            
+            subscriber.Subscribe("__keyspace@0__:*", (channel, value) =>
+            {
+                Console.WriteLine("Notification raised="+value);
+            }
+            );
+            
             // Demo Setup
             DemoSetup(cache);
 
@@ -24,11 +31,7 @@ namespace HelloWorld
             cache.StringSet("i", 1);
             Console.WriteLine("Current Value=" + cache.StringGet("i"));
 
-            subscriber.Subscribe("__keyspace@0__:*", (channel, value) =>
-            {
-                Console.WriteLine("Notification raised="+value);
-            }
-            );
+
         }
 
         private static void DemoSetup(IDatabase cache)
